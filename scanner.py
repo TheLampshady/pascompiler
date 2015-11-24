@@ -1,4 +1,9 @@
 
+double_symbol = [
+    "<",
+    ">",
+    ":"
+]
 
 class Scanner(object):
 
@@ -17,6 +22,9 @@ class Scanner(object):
             ch = self.file.read(1)
         return ch
 
+    def peek_char(self):
+        return self.ch or ' '
+
     def get_char(self):
         ch = self.file.read(1)
         if ch == '':
@@ -27,28 +35,28 @@ class Scanner(object):
     def get_word(self):
         word = ''
 
+        try:
+            if not self.ch:
+                self.ch = self.get_any_char()
+        except EOFError:
+            return None
+
         while True:
             word += self.ch
             try:
                 self.ch = self.get_char()
             except EOFError:
                 return word
-            if not self.ch or not self.ch.isalnum():
+            if not self.ch or not self._is_valid_word(word):
                 break
-        if not self.ch:
-            self.ch = self.get_any_char()
+
         return word
 
-    # @staticmethod
-    # def is_word(word):
-    #     if not len(word):
-    #         return True
-    #     if len(word) == 1:
-    #         if not word.isalpha():
-    #             return False
-    #
-    #     elif not word.isalnum():
-    #         return False
-    #
-    #     return True
+    def _is_valid_word(self, word):
+        if self.ch.isalnum():
+            return True
 
+        if word.isdigit() and self.ch == ".":
+            return True
+
+        return False
