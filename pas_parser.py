@@ -98,14 +98,22 @@ class Parser(object):
 
     def __init__(self, filename):
         self.scanner = Scanner(filename)
+        self.current_token = None
+        self.current_word = None
 
     @staticmethod
     def _is_valid_identifier(var_name):
-        return not var_name or not var_name[0].isalpha() or not var_name.isalnum()
+        if not var_name:
+            return False
+        return var_name[0].isalpha() and var_name.isalnum()
 
-    def get_token(self):
-        word = self.scanner.get_word().lower()
+    def get_next_token(self):
+        self.current_word = self.scanner.get_word().lower()
+        self.current_token = self._lookup_token(self.current_word)
 
+        return self.current_token
+
+    def _lookup_token(self, word):
         if not word:
             return None
 
@@ -123,7 +131,7 @@ class Parser(object):
         if self._is_valid_identifier(word):
             return "TK_IDENTIFIER"
 
-        return word
+        return ''
 
     def _get_double_symbol(self, word):
         if word in double_symbol:

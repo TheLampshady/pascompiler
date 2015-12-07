@@ -2,6 +2,7 @@
 
 import sys
 import argparse
+import json
 from program import Program
 
 arg_parser = argparse.ArgumentParser(prog='Pascal Compiler')
@@ -17,6 +18,7 @@ def main():
     pascal_program = Program(args.filename)
 
     pascal_program.run()
+    print json.dumps(pascal_program.symbol_table, indent=2)
     sys.exit(0)
 
 
