@@ -54,7 +54,8 @@ SYMBOLS = {
     "[": "TK_LEFT_BRACKET",
     "]": "TK_RIGHT_BRACKET",
 
-    ".": "TK_DOT"
+    ".": "TK_DOT",
+    "'": "TK_QUOTE"
 }
 
 double_symbol = [
@@ -126,7 +127,11 @@ class Parser(object):
             return token
 
         if word.isdigit():
-            return "TK_DIGIT"
+            try:
+                int(word)
+                return "TK_AN_INTEGER"
+            except ValueError:
+                return "TK_A_REAL"
 
         if self._is_valid_identifier(word):
             return "TK_IDENTIFIER"
@@ -136,8 +141,10 @@ class Parser(object):
     def _get_double_symbol(self, word):
         if word in double_symbol:
             peek = self.scanner.peek_char()
-            if str(word+peek) in self._symbols:
+            new_word = str(word+peek)
+            if new_word in self._symbols:
                 self.scanner.get_word()
+                self.current_word = new_word
                 return self._symbols.get(str(word+peek))
             else:
                 return self._symbols.get(word)

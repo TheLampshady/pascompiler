@@ -1,8 +1,8 @@
 from pas_parser import Parser
 from variable_functions import *
 
-class Program(object):
 
+class Program(object):
     def __init__(self, filename):
         self.pascal_parser = Parser(filename)
         self.symbol_table = dict()
@@ -14,7 +14,7 @@ class Program(object):
             self.run_program_name()
 
         if self.run_program() != "TK_DOT":
-            raise("Invalid End. Requires period.")
+            raise ValueError("Invalid End. Requires period.")
 
         self.run_comments()
 
@@ -30,14 +30,15 @@ class Program(object):
             token = self.pascal_parser.get_next_token()
 
             if token == "TK_VAR":
+                self.pascal_parser.get_next_token()
                 function_mode = self.declare_variables
 
             if token == "TK_CONSTANT":
-                function_mode = self.run_var
+                function_mode = self.run_default
             if token == "TK_FUNCTION":
-                function_mode = self.run_var
+                function_mode = self.run_default
             if token == "TK_PROCEDURE":
-                function_mode = self.run_var
+                function_mode = self.run_default
 
             if token == "TK_BEGIN":
                 self.run_begin()
@@ -49,27 +50,35 @@ class Program(object):
 
             function_mode()
 
-    def run_var(self):
+    def run_default(self):
         token = "None"
         while token and token != "TK_SEMICOLON":
             token = self.pascal_parser.get_next_token()
-            print "VAR: %s" % token
-
-        return
-
-    def run_const(self):
-        token = "None"
-        while token and token != "TK_SEMICOLON":
-            token = self.pascal_parser.get_next_token()
-            print "CONST: %s" % token
+            print "DEFAULT: %s" % token
 
         return
 
     def run_begin(self):
-        token = "None"
+        token = self.pascal_parser.get_next_token()
         while token and token != "TK_END":
+            word = self.pascal_parser.current_word
+            if token == 'TK_IDENTIFIER':
+                assignment = self.symbol_table.get(word, None)
+                if not assignment:
+                    raise ValueError("Identifier does not exist: '%s'" % word)
+                if self.pascal_parser.get_next_token() != "TK_ASSIGNMENT":
+                    raise ValueError("Expected Assignment: Got %s" %
+                                     self.pascal_parser.current_word)
+
+                self.pascal_parser.get_next_token()
+                result = evaluate_expression(self.pascal_parser, self.symbol_table)
+                assignment['value'] = result[1]
+            else:
+                print "Operation '%s': Not supported"
+                while self.pascal_parser.get_next_token() and \
+                    self.pascal_parser.current_token != "TK_SEMICOLON": pass
+
             token = self.pascal_parser.get_next_token()
-            print "BEGIN: %s" % token
 
         return
 
@@ -79,28 +88,33 @@ class Program(object):
             print "COMMENTS: %s" % token
 
     def declare_variables(self):
+        var_list = self.get_var_list()
+
+        result_props = get_identifier_props(self.pascal_parser)
+        for var_name in var_list:
+            if var_name in self.symbol_table:
+                raise ValueError("Identifier already exists: '%s'" % var_name)
+            var_entry = {var_name: dict(result_props)}
+            var_entry[var_name]['address'] = self.symbol_address
+            var_entry[var_name]['var_name'] = var_name
+            self.symbol_address += var_entry[var_name]['size']
+            self.symbol_table.update(var_entry)
+
+    def get_var_list(self):
         var_list = list()
+        token = self.pascal_parser.current_token
         while True:
-            token = self.pascal_parser.get_next_token()
             word = self.pascal_parser.current_word
             if token != 'TK_IDENTIFIER':
-                raise ValueError("Expected Identifier, got '%s'" % word)
-
-            if word in self.symbol_table:
-                raise ValueError("Identifier already exists: '%s'" % word)
+                raise ValueError("Unexpected Identifier, got '%s'" % word)
 
             var_list.append(word)
 
             token = self.pascal_parser.get_next_token()
             if token == 'TK_COLON':
-                break
+                return var_list
             elif token != 'TK_COMMA':
-                ValueError("Invalid Token: '%s'. Expected comma of colon" % word)
+                word = self.pascal_parser.current_word
+                raise ValueError("Invalid Token: '%s'. Expected comma or colon" % word)
 
-        result_props = get_identifier_props(self.pascal_parser)
-        for var_name in var_list:
-            var_entry = {var_name: dict(result_props)}
-            var_entry[var_name]['address'] = self.symbol_address
-            self.symbol_address += var_entry[var_name]['size']
-            self.symbol_table.update(var_entry)
-
+            token = self.pascal_parser.get_next_token()

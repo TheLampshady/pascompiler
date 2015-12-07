@@ -53,6 +53,9 @@ class Scanner(object):
         return word
 
     def _is_valid_word(self, word):
+        if len(word) == 1 and not word.isalnum():
+            return False
+
         if self.ch.isalnum():
             return True
 
