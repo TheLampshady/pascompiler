@@ -73,6 +73,8 @@ class Program(object):
                 self.pascal_parser.get_next_token()
                 result = evaluate_expression(self.pascal_parser, self.symbol_table)
                 assignment['value'] = result[1]
+                if self.pascal_parser.current_token != "TK_SEMICOLON":
+                    raise ValueError("Invalid Expression at '%s'" % self.pascal_parser.current_word)
             else:
                 print "Operation '%s': Not supported"
                 while self.pascal_parser.get_next_token() and \
