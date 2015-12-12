@@ -7,6 +7,7 @@ type_size = {
     'TK_A_REAL': 8,
 }
 
+
 def get_identifier_props(token_parser):
     type_token = token_parser.get_next_token()
 

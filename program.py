@@ -22,7 +22,7 @@ class Program(object):
         token = "None"
         while token is not None and token != "TK_SEMICOLON":
             token = self.pascal_parser.get_next_token()
-            print "PROGRAM: %s" % self.pascal_parser.current_word
+            #print "PROGRAM: %s" % self.pascal_parser.current_word
 
     def run_program(self):
         function_mode = None

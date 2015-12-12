@@ -43,6 +43,7 @@ def evaluate_expression_t(token_parser, symbol_table):
 
     return result
 
+
 def evaluate_expression_f(token_parser, symbol_table):
     """
 
@@ -68,30 +69,40 @@ def evaluate_expression_f(token_parser, symbol_table):
 
     # --------- Literals ---------
     elif token_parser.current_token == 'TK_A_BOOLEAN':
-        result = 'TK_A_BOOLEAN', token_parser.current_word
+        value = token_parser.current_word
+        result = 'TK_A_BOOLEAN', value
+        print "push %s" % value
     elif token_parser.current_token == "TK_QUOTE":
-        result = 'TK_A_CHAR', handle_char(token_parser)
+        value = handle_char(token_parser)
+        result = 'TK_A_CHAR', value
+        print "push '%s'" % value
     elif token_parser.current_token == 'TK_AN_INTEGER':
-        result = 'TK_AN_INTEGER', int(token_parser.current_word)
+        value = int(token_parser.current_word)
+        result = 'TK_AN_INTEGER', value
+        print "push %s" % value
     elif token_parser.current_token == 'TK_A_REAL':
+        value = float(token_parser.current_word)
         result = 'TK_A_REAL', float(token_parser.current_word)
+        print "push %s" % value
 
     elif token_parser.current_token == 'TK_NOT':
-        # TODO Flip sign
         token_parser.get_next_token()
         result = evaluate_expression_f(token_parser)
+        print "not"
     elif token_parser.current_token == 'TK_PLUS':
         token_parser.get_next_token()
         result = evaluate_expression_f(token_parser)
     elif token_parser.current_token == 'TK_MIUNS':
-        # TODO Flip sign
         token_parser.get_next_token()
         result = evaluate_expression_f(token_parser)
+        result = (result[0], result[1]*-1)
+        print "neg"
     else:
         raise ValueError("Invalid Variable: '%s'" % token_parser.current_token)
 
     token_parser.get_next_token()
     return result
+
 
 def handle_char(token_parser):
     token_parser.get_next_token()
@@ -104,17 +115,27 @@ def handle_char(token_parser):
     return result
 
 def add_operation(result, result2):
-    print "ADDING: %s|%s" % (str(result), str(result2))
+    #print "ADDING: %s|%s" % (str(result), str(result2))
+    instruction = "addi" if result[0] == 'TK_AN_INTEGER' else "add"
+    print instruction
     return result[0], result[1] + result2[1]
 
+
 def minus_operation(result, result2):
-    print "SUBTRACTING: %s|%s" % (str(result), str(result2))
+    #print "SUBTRACTING: %s|%s" % (str(result), str(result2))
+    instruction = "subi" if result[0] == 'TK_AN_INTEGER' else "sub"
+    print instruction
     return result2[0], result[1] - result2
 
+
 def mul_operation(result, result2):
-    print "MULTIPLYING: %s|%s" % (str(result), str(result2))
+    #print "MULTIPLYING: %s|%s" % (str(result), str(result2))
+    instruction = "muli" if result[0] == 'TK_AN_INTEGER' else "mul"
+    print instruction
     return result[0], result[1] * result2[1]
 
 def div_operation(result, result2):
-    print "DIVIDING: %s|%s" % (str(result), str(result2))
+    #print "DIVIDING: %s|%s" % (str(result), str(result2))
+    instruction = "divi" if result[0] == 'TK_AN_INTEGER' else "div"
+    print instruction
     return result2[0], result[1] / result2[1]
