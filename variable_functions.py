@@ -1,4 +1,4 @@
-from evaluate import *
+from expressions import *
 from token_lookup import *
 
 type_size = {
@@ -41,7 +41,7 @@ def get_identifier_props(token_parser):
             'size': type_size[TK_A_REAL]
         }
     else:
-        raise ValueError("Invalid Data Type: '%s'" % type_token)
+        raise ValueError("Invalid Data Type: '%s'" % token_parser.print_token(type_token))
 
     next_token = token_parser.get_next_token()
     if next_token == TK_LEFT_BRACKET:

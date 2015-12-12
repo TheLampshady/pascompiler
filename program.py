@@ -1,6 +1,9 @@
 from pas_parser import Parser
-from variable_functions import *
+from variable_functions import get_identifier_props
+from expressions import evaluate_expression
+from evaluate import handle_int_real_conversion
 from token_lookup import *
+
 
 class Program(object):
     def __init__(self, filename):
@@ -46,7 +49,7 @@ class Program(object):
                 return token
 
             if not function_mode:
-                raise ValueError("Invalid Token: '%s'" % token)
+                raise ValueError("Invalid Token: '%s'" % self.pascal_parser.print_token(token))
 
             function_mode()
 
@@ -72,7 +75,9 @@ class Program(object):
 
                 self.pascal_parser.get_next_token()
                 result = evaluate_expression(self.pascal_parser, self.symbol_table)
+                handle_int_real_conversion(assignment['data_type'], result[0], assignment=True)
                 assignment['value'] = result[1]
+                print "pop"
                 if self.pascal_parser.current_token != TK_SEMICOLON:
                     raise ValueError("Invalid Expression at '%s'" % self.pascal_parser.current_word)
             else:

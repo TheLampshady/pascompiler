@@ -109,6 +109,9 @@ class Parser(object):
             except ValueError:
                 return TK_A_REAL
 
+        if word in ['true', 'false']:
+            return TK_A_BOOL
+
         if self._is_valid_identifier(word):
             return TK_IDENTIFIER
 
@@ -128,3 +131,8 @@ class Parser(object):
 
     def is_done(self):
         return self.scanner.eof
+
+    def print_token(self, token=None):
+        if not token:
+            token = self.current_token
+        return token_map.get(token, "Unknown")
