@@ -14,7 +14,7 @@ def evaluate_array_expression(token_parser):
 
 
 def evaluate_expression(token_parser, symbol_table):
-    allowed = [TK_PLUS, TK_MINUS]
+    allowed = [TK_PLUS, TK_MINUS, TK_LESS_EQUAL, TK_LESS_THAN, TK_GREATER_EQUAL, TK_GREATER_THAN]
     result = evaluate_expression_t(token_parser, symbol_table)
     while token_parser.current_token in allowed:
 
@@ -22,10 +22,10 @@ def evaluate_expression(token_parser, symbol_table):
         token_parser.get_next_token()
         result2 = evaluate_expression_t(token_parser, symbol_table)
 
-        if operation == TK_PLUS:
-            result = add_operation(result, result2)
+        if operation in [TK_PLUS, TK_MINUS]:
+            result = arithmetic_operation(result, result2, operation)
         else:
-            result = minus_operation(result, result2)
+            result = comparison_operation(result, result2, operation)
 
     return result
 
@@ -39,14 +39,10 @@ def evaluate_expression_t(token_parser, symbol_table):
         token_parser.get_next_token()
         result2 = evaluate_expression_f(token_parser, symbol_table)
 
-        if operation == TK_MULTIPLY:
-            result = mul_operation(result, result2)
-        elif operation == TK_DIVIDE:
-            result = div_operation(result, result2)
-        elif operation == TK_OR:
-            result = or_operation(result, result2)
+        if operation in [TK_MULTIPLY, TK_DIVIDE]:
+            result = arithmetic_operation(result, result2, operation)
         else:
-            result = and_operation(result, result2)
+            result = bitwise_operation(result, result2, operation)
 
     return result
 

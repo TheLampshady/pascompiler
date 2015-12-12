@@ -1,9 +1,9 @@
 Program Add_Assign;
 Var
-    Num1 : Integer;
-    CHar1 : Char;
+    Bool1, Bool2, bool3 : Bool;
 
 Begin
- Num1 := 3 and 4;
- Char1 := True and False;
+ Bool1 := 3 > 4;
+ Bool2 := 'a' < 'b';
+ Bool3 := 5 <= 5;
 End.

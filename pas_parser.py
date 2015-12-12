@@ -124,7 +124,7 @@ class Parser(object):
             if new_word in self._symbols:
                 self.scanner.get_word()
                 self.current_word = new_word
-                return self._symbols.get(str(word+peek))
+                return self._symbols.get(new_word)
             else:
                 return self._symbols.get(word)
         return None
