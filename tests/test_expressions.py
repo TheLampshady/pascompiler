@@ -58,7 +58,7 @@ class TestExpressions(TestBase):
 
         self.assertEqual(lookup_1.get('value', None), 'a')
         self.assertTrue(lookup_2.get('value', None))
-        self.assertFalse(lookup_3.get('value', None))
+        self.assertFalse(lookup_3.get('value', True))
 
 
 

@@ -80,7 +80,7 @@ class Program(object):
                 result = evaluate_expression(self.pascal_parser, self.symbol_table)
                 handle_int_real_conversion(assignment['data_type'], result[0], assignment=True)
                 assignment['value'] = result[1]
-                print "pop addr %s" % assignment['address']
+                print "pusha %s" % assignment['address']
                 if self.pascal_parser.current_token != TK_SEMICOLON:
                     raise ValueError("Invalid Expression at '%s'" % self.pascal_parser.current_word)
             else:
