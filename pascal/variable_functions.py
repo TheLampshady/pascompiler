@@ -1,5 +1,5 @@
-from expressions import *
-from token_lookup import *
+from pascal.expressions import *
+from pascal.token_lookup import *
 
 type_size = {
     TK_A_BOOL: 1,

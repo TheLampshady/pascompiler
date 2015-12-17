@@ -1,8 +1,9 @@
-from pas_parser import Parser
-from variable_functions import get_identifier_props
-from expressions import evaluate_expression
-from evaluate import handle_int_real_conversion
-from token_lookup import *
+from pascal.pas_parser import Parser
+from pascal.variable_functions import get_identifier_props
+from pascal.expressions import evaluate_expression
+from pascal.evaluate import handle_int_real_conversion
+from pascal.token_lookup import *
+from printer import OutputBuffer
 
 
 class Program(object):
@@ -10,6 +11,7 @@ class Program(object):
         self.pascal_parser = Parser(filename)
         self.symbol_table = dict()
         self.symbol_address = 0
+        self.instructions = list()
 
     def run(self, mode=1):
         token = self.pascal_parser.get_next_token()
@@ -20,7 +22,7 @@ class Program(object):
             raise ValueError("Invalid End. Requires period.")
 
         self.run_comments()
-        print "#END\n\n"
+        #print "#END\n\n"
 
     def run_program_name(self):
         token = "None"
@@ -28,7 +30,7 @@ class Program(object):
         while token is not None and token != TK_SEMICOLON:
             token = self.pascal_parser.get_next_token()
             program_name += self.pascal_parser.current_word
-        print program_name+'\n'
+        #print program_name+'\n'
 
     def run_program(self):
         function_mode = None
@@ -60,37 +62,48 @@ class Program(object):
         token = "None"
         while token and token != TK_SEMICOLON:
             token = self.pascal_parser.get_next_token()
-            print "DEFAULT: %s" % token
+            #print "DEFAULT: %s" % token
 
         return
 
     def run_begin(self):
         token = self.pascal_parser.get_next_token()
         while token and token != TK_END:
-            word = self.pascal_parser.current_word
-            if token == TK_IDENTIFIER:
-                assignment = self.symbol_table.get(word, None)
-                if not assignment:
-                    raise ValueError("Identifier does not exist: '%s'" % word)
-                if self.pascal_parser.get_next_token() != TK_ASSIGNMENT:
-                    raise ValueError("Expected Assignment: Got %s" %
-                                     self.pascal_parser.current_word)
 
-                self.pascal_parser.get_next_token()
-                result = evaluate_expression(self.pascal_parser, self.symbol_table)
-                handle_int_real_conversion(assignment['data_type'], result[0], assignment=True)
-                assignment['value'] = result[1]
-                print "pusha %s" % assignment['address']
-                if self.pascal_parser.current_token != TK_SEMICOLON:
-                    raise ValueError("Invalid Expression at '%s'" % self.pascal_parser.current_word)
+            if token == TK_IDENTIFIER:
+                self._assignment()
+            elif token == TK_WRITE:
+                self._write()
             else:
                 print "Operation '%s': Not supported"
                 while self.pascal_parser.get_next_token() and \
                     self.pascal_parser.current_token != TK_SEMICOLON: pass
-
+            if self.pascal_parser.current_token != TK_SEMICOLON:
+                raise ValueError("Invalid Expression at '%s'" % self.pascal_parser.current_word)
             token = self.pascal_parser.get_next_token()
 
         return
+
+    def _assignment(self):
+        word = self.pascal_parser.current_word
+        assignment = self.symbol_table.get(word, None)
+        if not assignment:
+            raise ValueError("Identifier does not exist: '%s'" % word)
+        if self.pascal_parser.get_next_token() != TK_ASSIGNMENT:
+            raise ValueError("Expected Assignment: Got %s" %
+                             self.pascal_parser.current_word)
+
+        self.pascal_parser.get_next_token()
+        result = evaluate_expression(self.pascal_parser, self.symbol_table)
+        handle_int_real_conversion(assignment['data_type'], result[0], assignment=True)
+        assignment['value'] = result[1]
+        OutputBuffer.add("pusha %s" % assignment['address'])
+
+    def _write(self):
+        if self.pascal_parser.get_next_token() != TK_LEFT_PAREN:
+            raise ValueError("Expected '(': Got '%s'" % self.pascal_parser.current_word)
+        evaluate_expression(self.pascal_parser, self.symbol_table)
+        OutputBuffer.add("write")
 
     def run_comments(self):
         while not self.pascal_parser.scanner.eof:

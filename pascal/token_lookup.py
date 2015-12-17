@@ -56,6 +56,7 @@ TK_IDENTIFIER = 52
 TK_A_VAR = 53
 TK_A_DIGIT = 54
 
+TK_WRITE = 60
 
 token_map = {
     TK_LESS_EQUAL: "TK_LESS_EQUAL",

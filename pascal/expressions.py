@@ -1,11 +1,10 @@
-from token_lookup import *
-from evaluate import *
-
+from pascal.evaluate import *
+from printer import OutputBuffer
 
 def evaluate_array_expression(token_parser):
     while token_parser.get_next_token():
         token = token_parser.current_token
-        print "Array Token: '%s' % token"
+        #print "Array Token: '%s' % token"
 
         if token == TK_RIGHT_BRACKET:
             return 1, 3
@@ -69,28 +68,28 @@ def evaluate_expression_f(token_parser, symbol_table):
         if value is None:
             raise ValueError("Variable Not Initialized: '%s'" % token_parser.current_word)
         result = (lookup['data_type'], value)
-        print 'addr %s' % lookup.get('address')
+        OutputBuffer.add('addr %s' % lookup.get('address'))
 
     # --------- Literals ---------
     elif token_parser.current_token == TK_A_BOOL:
         value = bool(token_parser.current_word == 'true')
         result = TK_A_BOOL, value
-        print "push %s" % value
+        OutputBuffer.add("push %s" % value)
     elif token_parser.current_token == TK_QUOTE:
         value = handle_char(token_parser)
         result = TK_A_CHAR, value
-        print "push '%s'" % value
+        OutputBuffer.add("push '%s'" % value)
     elif token_parser.current_token == TK_A_DIGIT:
         value = float(token_parser.current_word) if token_parser.is_real() else int(token_parser.current_word)
         result = token_parser.current_token, value
-        print "push %s" % value
+        OutputBuffer.add("push %s" % value)
 
     elif token_parser.current_token == TK_NOT:
         token_parser.get_next_token()
         result = evaluate_expression_f(token_parser)
         if result[0] not in [TK_AN_INTEGER, TK_A_BOOL]:
             raise TypeError("Invalid Type for Not Operation: '%s'" % result[0])
-        print "not"
+        OutputBuffer.add("not")
     elif token_parser.current_token == TK_PLUS:
         token_parser.get_next_token()
         result = evaluate_expression_f(token_parser)
@@ -102,7 +101,7 @@ def evaluate_expression_f(token_parser, symbol_table):
         if result[0] not in [TK_AN_INTEGER, TK_A_REAL]:
             raise TypeError("Invalid Type for Minus Operation: '%s'" % result[0])
         result = (result[0], result[1]*-1)
-        print "neg"
+        OutputBuffer.add("neg")
     else:
         raise ValueError("Invalid Variable: '%s'" % token_parser.print_token())
 

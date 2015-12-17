@@ -1,5 +1,5 @@
 from tests.base import TestBase
-from pas_parser import Parser
+from pascal.pas_parser import Parser
 class TestParser(TestBase):
 
 

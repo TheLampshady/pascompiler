@@ -1,5 +1,5 @@
-from scanner import Scanner
-from token_lookup import *
+from pascal.scanner import Scanner
+from pascal.token_lookup import *
 
 reserved_words = {
     'program': TK_PROGRAM,
@@ -29,6 +29,8 @@ reserved_words = {
     'integer': TK_INTEGER,
     'bool': TK_BOOLEAN,
     'char': TK_CHAR,
+
+    'write': TK_WRITE,
 }
 
 SYMBOLS = {

@@ -1,5 +1,7 @@
-from token_lookup import *
 import operator
+
+from pascal.token_lookup import *
+from printer import OutputBuffer
 
 INSTRUCTIONS = {
     TK_PLUS: "add",
@@ -35,21 +37,21 @@ OPERATOR = {
 def arithmetic_operation(result, result2, operation):
     data_type = handle_arithmetic_data_type(result[0], result2[0])
     instruction = INSTRUCTIONS[operation]
-    print "f%s" % instruction if data_type == TK_A_REAL else instruction
-    return data_type, OPERATOR.get(operation)(result[1], result2[1])
+    OutputBuffer.add("f%s" % instruction if data_type == TK_A_REAL else instruction)
+    return data_type, OPERATOR.get(operation)(result[1], result2[1]),
 
 
 def bitwise_operation(result, result2, operation):
     data_type = handle_bitwise_data_type(result[0], result2[0])
     instruction = INSTRUCTIONS[operation]
-    print "b%s" % instruction if data_type == TK_AN_INTEGER else instruction
+    OutputBuffer.add("b%s" % instruction if data_type == TK_AN_INTEGER else instruction)
     return data_type, OPERATOR.get(operation)(result[1], result2[1])
 
 
 def comparison_operation(result, result2, operation):
     data_type = handle_comparison_data_type(result[0], result2[0])
     instruction = INSTRUCTIONS[operation]
-    print "f%s" % instruction if data_type == TK_A_REAL else instruction
+    OutputBuffer.add( "f%s" % instruction if data_type == TK_A_REAL else instruction)
     return data_type, OPERATOR.get(operation)(result[1], result2[1])
 
 
@@ -86,16 +88,14 @@ def handle_int_real_conversion(type1, type2, assignment=False):
 
     if type1 == TK_AN_INTEGER:
         if type2 == TK_A_REAL and not assignment:
-            print "exch"
-            print "conv float"
-            print "exch"
+            OutputBuffer.add("exch\nconvf\nexch")
         else:
             raise TypeError("Cannot Operate Integer with '%s" %
                             token_map.get(type2))
 
     elif type1 == TK_A_REAL:
         if type2 == TK_AN_INTEGER:
-            print "conv float"
+            OutputBuffer.add("convft")
         else:
             raise TypeError("Cannot Operate Real with '%s" %
                             token_map.get(type2))

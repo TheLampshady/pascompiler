@@ -5,7 +5,7 @@ from pascal.program import Program
 class TestExpressions(TestBase):
 
     def test_pass_valid_var(self):
-        file_name = "tests/mock_pas/math_complex.pas"
+        file_name = "tests/mock_pas/write.pas"
         pascal_program = Program(file_name)
         pascal_program.run()
         lookup_one = pascal_program.symbol_table.get('num1', None)

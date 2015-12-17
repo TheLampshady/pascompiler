@@ -1,5 +1,5 @@
 from tests.base import TestBase
-from program import Program
+from pascal.program import Program
 
 
 class TestOperations(TestBase):
