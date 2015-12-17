@@ -14,7 +14,7 @@ def evaluate_array_expression(token_parser):
 
 
 def evaluate_expression(token_parser, symbol_table):
-    allowed = [TK_PLUS, TK_MINUS, TK_LESS_EQUAL, TK_LESS_THAN, TK_GREATER_EQUAL, TK_GREATER_THAN]
+    allowed = [TK_PLUS, TK_MINUS, TK_EQUAL, TK_LESS_EQUAL, TK_LESS_THAN, TK_GREATER_EQUAL, TK_GREATER_THAN]
     result = evaluate_expression_t(token_parser, symbol_table)
     while token_parser.current_token in allowed:
 
@@ -69,6 +69,7 @@ def evaluate_expression_f(token_parser, symbol_table):
         if value is None:
             raise ValueError("Variable Not Initialized: '%s'" % token_parser.current_word)
         result = (lookup['data_type'], value)
+        print 'addr %s' % lookup.get('address')
 
     # --------- Literals ---------
     elif token_parser.current_token == TK_A_BOOL:
@@ -79,13 +80,9 @@ def evaluate_expression_f(token_parser, symbol_table):
         value = handle_char(token_parser)
         result = TK_A_CHAR, value
         print "push '%s'" % value
-    elif token_parser.current_token == TK_AN_INTEGER:
-        value = int(token_parser.current_word)
-        result = TK_AN_INTEGER, value
-        print "push %s" % value
-    elif token_parser.current_token == TK_A_REAL:
-        value = float(token_parser.current_word)
-        result = 'TK_A_REAL', float(token_parser.current_word)
+    elif token_parser.current_token == TK_A_DIGIT:
+        value = float(token_parser.current_word) if token_parser.is_real() else int(token_parser.current_word)
+        result = token_parser.current_token, value
         print "push %s" % value
 
     elif token_parser.current_token == TK_NOT:

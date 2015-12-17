@@ -8,6 +8,8 @@ INSTRUCTIONS = {
     TK_DIVIDE: "div",
     TK_AND: "and",
     TK_OR: "or",
+    TK_EQUAL: "eq",
+    TK_NOT_EQUAL: "ne",
     TK_LESS_THAN: "lss",
     TK_LESS_EQUAL: "lse",
     TK_GREATER_THAN: "gtr",
@@ -21,6 +23,8 @@ OPERATOR = {
     TK_DIVIDE: operator.div,
     TK_AND: operator.and_,
     TK_OR: operator.or_,
+    TK_EQUAL: operator.eq,
+    TK_NOT_EQUAL: operator.ne,
     TK_LESS_THAN: operator.lt,
     TK_LESS_EQUAL: operator.le,
     TK_GREATER_THAN: operator.gt,
@@ -89,7 +93,7 @@ def handle_int_real_conversion(type1, type2, assignment=False):
             raise TypeError("Cannot Operate Integer with '%s" %
                             token_map.get(type2))
 
-    elif type2 == TK_A_REAL:
+    elif type1 == TK_A_REAL:
         if type2 == TK_AN_INTEGER:
             print "conv float"
         else:

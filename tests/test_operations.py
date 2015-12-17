@@ -2,7 +2,7 @@ from tests.base import TestBase
 from program import Program
 
 
-class TestExpressions(TestBase):
+class TestOperations(TestBase):
 
     def test_pass_valid_var(self):
         file_name = "tests/mock_pas/bitwise_assign.pas"
@@ -35,3 +35,23 @@ class TestExpressions(TestBase):
         self.assertFalse(lookup_bool1.get('value', None))
         self.assertTrue(lookup_bool2.get('value', None))
         self.assertTrue(lookup_bool3.get('value', None))
+
+    def test_pass_valid_real_operation(self):
+        file_name = "tests/mock_pas/math_real.pas"
+        pascal_program = Program(file_name)
+        pascal_program.run()
+        lookup_one = pascal_program.symbol_table.get('real1', None)
+        lookup_two = pascal_program.symbol_table.get('real2', None)
+
+        self.assertEqual(lookup_one.get('value', None), 5.5)
+        self.assertEqual(lookup_two.get('value', None), 3.2)
+
+    def test_pass_valid_real_int_convert(self):
+        file_name = "tests/mock_pas/math_convert.pas"
+        pascal_program = Program(file_name)
+        pascal_program.run()
+        lookup_one = pascal_program.symbol_table.get('real1', None)
+        lookup_two = pascal_program.symbol_table.get('real2', None)
+
+        self.assertEqual(lookup_one.get('value', None), 8.5)
+        self.assertEqual(lookup_two.get('value', None), 7.5)

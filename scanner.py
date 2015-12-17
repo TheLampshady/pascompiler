@@ -59,7 +59,4 @@ class Scanner(object):
         if self.ch.isalnum():
             return True
 
-        if word.isdigit() and self.ch == ".":
-            return True
-
         return False

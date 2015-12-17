@@ -38,5 +38,27 @@ class TestExpressions(TestBase):
 
             self.assertTrue('Invalid Expression' in context.exception)
 
+    def test_pass_valid_real_operation(self):
+        file_name = "tests/mock_pas/math_real.pas"
+        pascal_program = Program(file_name)
+        pascal_program.run()
+        lookup_one = pascal_program.symbol_table.get('real1', None)
+        lookup_two = pascal_program.symbol_table.get('real2', None)
+
+        self.assertEqual(lookup_one.get('value', None), 5.5)
+        self.assertEqual(lookup_two.get('value', None), 3.2)
+
+    def test_pass_valid_compare(self):
+        file_name = "tests/mock_pas/operate_chars.pas"
+        pascal_program = Program(file_name)
+        pascal_program.run()
+        lookup_1 = pascal_program.symbol_table.get('char1', None)
+        lookup_2 = pascal_program.symbol_table.get('bool1', None)
+        lookup_3 = pascal_program.symbol_table.get('bool2', None)
+
+        self.assertEqual(lookup_1.get('value', None), 'a')
+        self.assertTrue(lookup_2.get('value', None))
+        self.assertFalse(lookup_3.get('value', None))
+
 
 

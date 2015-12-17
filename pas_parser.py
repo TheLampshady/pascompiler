@@ -103,11 +103,7 @@ class Parser(object):
             return token
 
         if word.isdigit():
-            try:
-                int(word)
-                return TK_AN_INTEGER
-            except ValueError:
-                return TK_A_REAL
+            return TK_A_DIGIT
 
         if word in ['true', 'false']:
             return TK_A_BOOL
@@ -131,6 +127,24 @@ class Parser(object):
 
     def is_done(self):
         return self.scanner.eof
+
+    def is_real(self):
+        if self.current_token != TK_A_DIGIT:
+            return False
+        number = self.current_word
+        if self.scanner.peek_char() == ".":
+            if not self.get_next_token() == TK_DOT:
+                raise ValueError("Invalid Digit: '%s'" % str(number)+self.current_word)
+            self.get_next_token()
+            if self.current_token != TK_A_DIGIT:
+                raise ValueError("Invalid Digit: '%s'" % str(number)+self.current_word)
+            self.current_word = number+'.'+self.current_word
+            self.current_token = TK_A_REAL
+            return True
+        else:
+            self.current_token = TK_AN_INTEGER
+
+        return False
 
     def print_token(self, token=None):
         if not token:

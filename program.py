@@ -20,12 +20,15 @@ class Program(object):
             raise ValueError("Invalid End. Requires period.")
 
         self.run_comments()
+        print "#END\n\n"
 
     def run_program_name(self):
         token = "None"
+        program_name = '#'
         while token is not None and token != TK_SEMICOLON:
             token = self.pascal_parser.get_next_token()
-            #print "PROGRAM: %s" % self.pascal_parser.current_word
+            program_name += self.pascal_parser.current_word
+        print program_name+'\n'
 
     def run_program(self):
         function_mode = None
@@ -77,7 +80,7 @@ class Program(object):
                 result = evaluate_expression(self.pascal_parser, self.symbol_table)
                 handle_int_real_conversion(assignment['data_type'], result[0], assignment=True)
                 assignment['value'] = result[1]
-                print "pop"
+                print "pop addr %s" % assignment['address']
                 if self.pascal_parser.current_token != TK_SEMICOLON:
                     raise ValueError("Invalid Expression at '%s'" % self.pascal_parser.current_word)
             else:
