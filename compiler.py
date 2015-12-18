@@ -23,7 +23,6 @@ def main():
     pascal_program = Program(args.filename)
 
     pascal_program.run()
-    #print json.dumps(pascal_program.symbol_table, indent=2)
     OutputBuffer.print_output(args.out_filename or None)
     sys.exit(0)
 
