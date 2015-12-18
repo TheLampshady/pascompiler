@@ -6,11 +6,11 @@ import argparse
 from skynet import Skynet
 
 
-arg_parser = argparse.ArgumentParser(prog='Pascal Compiler')
+arg_parser = argparse.ArgumentParser(prog='Operation Compiler')
 
 arg_parser.add_argument('-f', '--filename', required=True,
                         dest='filename',
-                        help='location of machine instr')
+                        help='location of machine instruction')
 
 arg_parser.add_argument('-d', '--debug',
                         dest='debug',

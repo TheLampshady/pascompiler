@@ -14,7 +14,7 @@ arg_parser.add_argument('-p', '--pascal', required=True,
                         help='location of pascal program')
 arg_parser.add_argument('-o', '--outfile',
                         dest='out_filename',
-                        help='location of pascal program')
+                        help='file to output operations')
 
 args = arg_parser.parse_args()
 

@@ -26,7 +26,7 @@ class Skynet(object):
                 self.stack.pop()
             elif instr == 'addr':
                 self.stack.append(self.memory.get(int(value)))
-            elif instr == 'write ':
+            elif instr == 'write':
                 self.buffer.append(self.stack.pop())
             elif instr == 'convf':
                 a = self.stack.pop()
@@ -55,35 +55,35 @@ class Skynet(object):
             elif instr == 'mul':
                 a = self.stack.pop()
                 b = self.stack.pop()
-                self.stack.append(int(a) - int(b))
+                self.stack.append(int(a) * int(b))
             elif instr == 'fmul':
                 a = self.stack.pop()
                 b = self.stack.pop()
-                self.stack.append(float(a) - float(b))
+                self.stack.append(float(a) * float(b))
             elif instr == 'div':
                 a = self.stack.pop()
                 b = self.stack.pop()
-                self.stack.append(int(a) - int(b))
+                self.stack.append(int(a) / int(b))
             elif instr == 'fdiv':
                 a = self.stack.pop()
                 b = self.stack.pop()
-                self.stack.append(float(a) - float(b))
+                self.stack.append(float(a) / float(b))
             elif instr == 'and':
                 a = self.stack.pop()
                 b = self.stack.pop()
-                self.stack.append(bool(a) - bool(b))
+                self.stack.append(bool(a) & bool(b))
             elif instr == 'band':
                 a = self.stack.pop()
                 b = self.stack.pop()
-                self.stack.append(int(a) - int(b))
+                self.stack.append(int(a) & int(b))
             elif instr == 'or':
                 a = self.stack.pop()
                 b = self.stack.pop()
-                self.stack.append(bool(a) - bool(b))
+                self.stack.append(bool(a) | bool(b))
             elif instr == 'bor':
                 a = self.stack.pop()
                 b = self.stack.pop()
-                self.stack.append(int(a) & int(b))
+                self.stack.append(int(a) | int(b))
             elif instr == 'lss':
                 a = self.stack.pop()
                 b = self.stack.pop()
@@ -110,15 +110,16 @@ class Skynet(object):
                 self.stack.append(a != b)
             else:
                 print "Unknown: %s" % instr
-            self.print_state("%s %s" % (instr, value))
+            if self.debug:
+                self.print_state("%s %s" % (instr, value))
 
         self._print_output()
 
     def _print_output(self):
         if self.buffer:
             print 'Output:'
-            print '-------\n\n:'
-            print '\n'.join(self.buffer)
+            print '-------\n'
+            print '\n'.join([str(x) for x in self.buffer])
 
     def print_state(self, instruction):
         print "Instruction: %s" % instruction
