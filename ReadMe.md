@@ -4,7 +4,7 @@ Through the magic of python pascal is compiled
 
 ## Installation
 
-git clone 
+git clone https://github.com/TheLampshady/pascompiler.git
 
 ## Usage
 
