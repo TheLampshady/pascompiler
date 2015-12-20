@@ -1,9 +1,14 @@
-import collections
+
 
 def parse_line(instr):
     split_line = instr.split()
-    return split_line[0], ' '.join(split_line[1:])
+    x, y = split_line[0], ' '.join(split_line[1:])
+    if y.lower() == 'true':
+        y = True
+    elif y.lower() == 'false':
+        y = False
 
+    return x, y
 
 class Skynet(object):
 
@@ -47,11 +52,11 @@ class Skynet(object):
             elif instr == 'sub':
                 a = self.stack.pop()
                 b = self.stack.pop()
-                self.stack.append(int(a) - int(b))
+                self.stack.append(int(b) - int(a))
             elif instr == 'fsub':
                 a = self.stack.pop()
                 b = self.stack.pop()
-                self.stack.append(float(a) - float(b))
+                self.stack.append(float(b) - float(a))
             elif instr == 'mul':
                 a = self.stack.pop()
                 b = self.stack.pop()
@@ -63,11 +68,11 @@ class Skynet(object):
             elif instr == 'div':
                 a = self.stack.pop()
                 b = self.stack.pop()
-                self.stack.append(int(a) / int(b))
+                self.stack.append(int(b) / int(a))
             elif instr == 'fdiv':
                 a = self.stack.pop()
                 b = self.stack.pop()
-                self.stack.append(float(a) / float(b))
+                self.stack.append(float(b) / float(a))
             elif instr == 'and':
                 a = self.stack.pop()
                 b = self.stack.pop()
@@ -87,19 +92,19 @@ class Skynet(object):
             elif instr == 'lss':
                 a = self.stack.pop()
                 b = self.stack.pop()
-                self.stack.append(a < b)
+                self.stack.append(b < a)
             elif instr == 'gtr':
                 a = self.stack.pop()
                 b = self.stack.pop()
-                self.stack.append(a > b)
+                self.stack.append(b > a)
             elif instr == 'lse':
                 a = self.stack.pop()
                 b = self.stack.pop()
-                self.stack.append(a <= b)
+                self.stack.append(b <= a)
             elif instr == 'gte':
                 a = self.stack.pop()
                 b = self.stack.pop()
-                self.stack.append(a >= b)
+                self.stack.append(b >= a)
             elif instr == 'eq':
                 a = self.stack.pop()
                 b = self.stack.pop()

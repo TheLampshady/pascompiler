@@ -1,0 +1,29 @@
+push 5
+pusha 0
+push 1
+addr 0
+push 3
+mul
+add
+pusha 4
+addr 4
+push 2
+push 3
+push 1
+add
+mul
+add
+pusha 8
+addr 8
+write
+push 1.5
+addr 0
+convft
+fadd
+pusha 12
+addr 12
+push 1.25
+fadd
+pusha 20
+addr 20
+write

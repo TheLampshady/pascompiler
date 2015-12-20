@@ -78,7 +78,7 @@ def evaluate_expression_f(token_parser, symbol_table):
     elif token_parser.current_token == TK_QUOTE:
         value = handle_char(token_parser)
         result = TK_A_CHAR, value
-        OutputBuffer.add("push '%s'" % value)
+        OutputBuffer.add("push %s" % value)
     elif token_parser.current_token == TK_A_DIGIT:
         value = float(token_parser.current_word) if token_parser.is_real() else int(token_parser.current_word)
         result = token_parser.current_token, value
